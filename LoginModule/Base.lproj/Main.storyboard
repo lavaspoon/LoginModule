@@ -79,6 +79,9 @@
                                             <fontDescription key="titleFontDescription" type="boldSystem" pointSize="18"/>
                                             <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="googleLoginBtnTapped:" destination="e0R-kw-ax4" eventType="touchUpInside" id="pdm-df-n5y"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rB6-qV-bb7">
                                         <rect key="frame" x="0.0" y="150" width="354" height="60"/>
@@ -92,6 +95,10 @@
                                             <fontDescription key="titleFontDescription" type="boldSystem" pointSize="18"/>
                                             <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="appleLoginBtnTapped:" destination="e0R-kw-ax4" eventType="touchUpInside" id="6Rs-KL-ovz"/>
+                                            <action selector="googleLoginBtnTapped:" destination="e0R-kw-ax4" eventType="touchUpInside" id="bCT-Jf-YcQ"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -116,6 +123,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="OfA-rf-GyV"/>
+                    <connections>
+                        <outlet property="appleLoginBtn" destination="rB6-qV-bb7" id="dO8-jW-Yzj"/>
+                        <outlet property="emailLoginBtn" destination="zvK-KQ-yOV" id="kdO-wP-aM2"/>
+                        <outlet property="googleLoginBtn" destination="ueo-SH-UuL" id="RlB-PK-Oza"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="722-GI-tnd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
