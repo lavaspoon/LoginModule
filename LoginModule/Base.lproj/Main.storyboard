@@ -84,6 +84,7 @@
                                             <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </buttonConfiguration>
                                         <connections>
+                                            <action selector="GoogleLoginBtnTapped:" destination="EMC-Bd-GPa" eventType="touchUpInside" id="JYq-Y6-28i"/>
                                             <action selector="googleLoginBtnTapped:" destination="e0R-kw-ax4" eventType="touchUpInside" id="pdm-df-n5y"/>
                                         </connections>
                                     </button>
@@ -100,6 +101,7 @@
                                             <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </buttonConfiguration>
                                         <connections>
+                                            <action selector="AppleLoginBtnTapped:" destination="EMC-Bd-GPa" eventType="touchUpInside" id="FWn-GF-8Qv"/>
                                             <action selector="appleLoginBtnTapped:" destination="e0R-kw-ax4" eventType="touchUpInside" id="6Rs-KL-ovz"/>
                                             <action selector="googleLoginBtnTapped:" destination="e0R-kw-ax4" eventType="touchUpInside" id="bCT-Jf-YcQ"/>
                                         </connections>
@@ -134,6 +136,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="722-GI-tnd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="EMC-Bd-GPa" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="213" y="72"/>
         </scene>
@@ -196,6 +199,9 @@
                                     <fontDescription key="titleFontDescription" type="boldSystem" pointSize="18"/>
                                     <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="nextButtonTapped:" destination="qBQ-8l-zow" eventType="touchUpInside" id="I9h-8V-h3e"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="O7h-5Z-Tl3"/>
@@ -221,11 +227,29 @@
             </objects>
             <point key="canvasLocation" x="1142" y="72"/>
         </scene>
+        <!--Main View Controller-->
+        <scene sceneID="t7H-Ur-Jlg">
+            <objects>
+                <viewController id="kWk-z8-HtE" customClass="MainViewController" customModule="LoginModule" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="nWZ-kC-DA0">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="DdZ-cH-ZYX"/>
+                        <color key="backgroundColor" systemColor="labelColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="snH-7I-DyC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1945" y="82"/>
+        </scene>
     </scenes>
     <resources>
         <image name="logo_apple" width="33.333332061767578" height="33.333332061767578"/>
         <image name="logo_google" width="33.333332061767578" height="33.333332061767578"/>
         <image name="music.house.fill" catalog="system" width="128" height="104"/>
+        <systemColor name="labelColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemPinkColor">
             <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
