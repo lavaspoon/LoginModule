@@ -234,13 +234,38 @@
                     <view key="view" contentMode="scaleToFill" id="nWZ-kC-DA0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="환영합니다." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oad-yq-5an">
+                                <rect key="frame" x="149.5" y="440" width="115" height="30"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eG9-03-456">
+                                <rect key="frame" x="163.5" y="490" width="87" height="36"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="로그아웃">
+                                    <fontDescription key="titleFontDescription" type="system" pointSize="18"/>
+                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="logoutBtnTapped:" destination="kWk-z8-HtE" eventType="touchUpInside" id="ZIe-Bo-g33"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="DdZ-cH-ZYX"/>
                         <color key="backgroundColor" systemColor="labelColor"/>
+                        <constraints>
+                            <constraint firstItem="Oad-yq-5an" firstAttribute="centerX" secondItem="DdZ-cH-ZYX" secondAttribute="centerX" id="5tE-ro-7MJ"/>
+                            <constraint firstItem="eG9-03-456" firstAttribute="top" secondItem="Oad-yq-5an" secondAttribute="bottom" constant="20" id="b7U-Er-fIW"/>
+                            <constraint firstItem="Oad-yq-5an" firstAttribute="centerY" secondItem="DdZ-cH-ZYX" secondAttribute="centerY" id="qSg-j2-Oe0"/>
+                            <constraint firstItem="eG9-03-456" firstAttribute="centerX" secondItem="DdZ-cH-ZYX" secondAttribute="centerX" id="w6S-dN-L6H"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="snH-7I-DyC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1945" y="82"/>
+            <point key="canvasLocation" x="1943" y="72"/>
         </scene>
     </scenes>
     <resources>

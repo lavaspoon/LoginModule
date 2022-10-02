@@ -14,4 +14,13 @@ class MainViewController : UIViewController {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.navigationBar.isHidden = true
+    }
+    
+    @IBAction func logoutBtnTapped(_ sender: UIButton) {
+        self.navigationController?.popToRootViewController(animated: true)
+    }
 }
