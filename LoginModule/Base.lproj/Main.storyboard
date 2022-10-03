@@ -230,7 +230,7 @@
         <!--Main View Controller-->
         <scene sceneID="t7H-Ur-Jlg">
             <objects>
-                <viewController id="kWk-z8-HtE" customClass="MainViewController" customModule="LoginModule" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainViewController" id="kWk-z8-HtE" customClass="MainViewController" customModule="LoginModule" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nWZ-kC-DA0">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -262,6 +262,9 @@
                             <constraint firstItem="eG9-03-456" firstAttribute="centerX" secondItem="DdZ-cH-ZYX" secondAttribute="centerX" id="w6S-dN-L6H"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="welcomeLabel" destination="Oad-yq-5an" id="CnN-FR-iiI"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="snH-7I-DyC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
