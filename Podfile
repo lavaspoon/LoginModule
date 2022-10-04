@@ -7,5 +7,6 @@ target 'LoginModule' do
 
   # Pods for LoginModule
   pod 'Firebase/Auth'
+  pod 'GoogleSignIn' , '~> 5.0'
 
 end

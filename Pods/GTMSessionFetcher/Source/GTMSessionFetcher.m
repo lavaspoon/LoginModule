@@ -17,14 +17,14 @@
 #error "This file requires ARC support."
 #endif
 
-#import "GTMSessionFetcher/GTMSessionFetcher.h"
+#import "GTMSessionFetcher.h"
 #if TARGET_OS_OSX && GTMSESSION_RECONNECT_BACKGROUND_SESSIONS_ON_LAUNCH
 // To reconnect background sessions on Mac outside +load requires importing and linking
 // AppKit to access the NSApplicationDidFinishLaunching symbol.
 #import <AppKit/AppKit.h>
 #endif
 
-#include <sys/utsname.h>
+#import <sys/utsname.h>
 
 #ifndef STRIP_GTM_FETCH_LOGGING
 #error GTMSessionFetcher headers should have defaulted this if it wasn't already defined.
@@ -227,10 +227,7 @@ static GTMSessionFetcherTestBlock _Nullable gGlobalTestBlock;
   dispatch_group_t _callbackGroup;   // read-only after creation
   NSOperationQueue *_delegateQueue;  // immutable after beginFetch
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
   id<GTMFetcherAuthorizationProtocol> _authorizer;  // immutable after beginFetch
-#pragma clang diagnostic pop
 
   // The service object that created and monitors this fetcher, if any.
   id<GTMSessionFetcherServiceProtocol>
@@ -678,7 +675,7 @@ static GTMSessionFetcherTestBlock _Nullable gGlobalTestBlock;
 #if GTM_SDK_REQUIRES_TLSMINIMUMSUPPORTEDPROTOCOLVERSION
       _configuration.TLSMinimumSupportedProtocolVersion = tls_protocol_version_TLSv12;
 #elif GTM_SDK_SUPPORTS_TLSMINIMUMSUPPORTEDPROTOCOLVERSION
-      if (@available(iOS 13, tvOS 13, macOS 10.15, *)) {
+      if (@available(iOS 13, tvOS 13, watchOS 6, macOS 10.15, *)) {
         _configuration.TLSMinimumSupportedProtocolVersion = tls_protocol_version_TLSv12;
       } else {
         _configuration.TLSMinimumSupportedProtocol = kTLSProtocol12;
@@ -1681,22 +1678,8 @@ NSData *_Nullable GTMDataFromInputStream(NSInputStream *inputStream, NSError **o
   GTMSessionCheckNotSynchronized(self);
 
   id authorizer = self.authorizer;
-  // Prefer the block-based implementation. This *is* a change in behavior, but if authorizers
-  // previously provided this method they would presumably assume they can be used for the same
-  // requests as before.
-  if ([authorizer respondsToSelector:@selector(authorizeRequest:completionHandler:)]) {
-    // It's unknown how long an authorizer maintains ownership of the provided block, so
-    // avoid potential retain cycles on self and the authorizer.
-    __weak __typeof__(self) weakSelf = self;
-    NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
-    [authorizer authorizeRequest:mutableRequest
-               completionHandler:^(NSError *_Nullable error) {
-                 [weakSelf authorizer:nil
-                               request:mutableRequest
-                     finishedWithError:error];
-               }];
-  } else if ([authorizer respondsToSelector:@selector(authorizeRequest:
-                                                              delegate:didFinishSelector:)]) {
+  SEL asyncAuthSel = @selector(authorizeRequest:delegate:didFinishSelector:);
+  if ([authorizer respondsToSelector:asyncAuthSel]) {
     SEL callbackSel = @selector(authorizer:request:finishedWithError:);
     NSMutableURLRequest *mutableRequest = [self.request mutableCopy];
     [authorizer authorizeRequest:mutableRequest delegate:self didFinishSelector:callbackSel];
@@ -1709,17 +1692,14 @@ NSData *_Nullable GTMDataFromInputStream(NSInputStream *inputStream, NSError **o
   }
 }
 
-// The authorizer parameter is unused, and the block-based callback will never pass
-// non-nil; the field is only for the deprecated selector-based implementation for
-// legacy reasons.
-- (void)authorizer:(nullable id __unused)auth
-              request:(nullable NSMutableURLRequest *)authorizedRequest
-    finishedWithError:(nullable NSError *)error {
+- (void)authorizer:(id<GTMFetcherAuthorizationProtocol>)auth
+              request:(NSMutableURLRequest *)authorizedRequest
+    finishedWithError:(NSError *)error {
   GTMSessionCheckNotSynchronized(self);
 
   if (error != nil) {
     // We can't fetch without authorization
-    [self failToBeginFetchWithError:(NSError *_Nonnull)error];
+    [self failToBeginFetchWithError:error];
   } else {
     @synchronized(self) {
       _request = authorizedRequest;
@@ -2642,42 +2622,36 @@ static _Nullable id<GTMUIApplicationProtocol> gSubstituteUIApp;
 
   // Callbacks will be released in the method stopFetchReleasingCallbacks:
   GTMSessionFetcherCompletionHandler handler;
-  dispatch_queue_t callbackQueue;
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
 
-    // Capture the completion handler and callback queue, and call them only
-    // after releasing any callbacks to ensure the order of release vs
-    // callback is deterministic given potential QoS differences between
-    // callback queue and whatever queue this method eventually executes on.
     handler = _completionHandler;
-    callbackQueue = _callbackQueue;
-  }
+
+    if (handler) {
+      [self invokeOnCallbackQueueUnlessStopped:^{
+        handler(data, error);
+
+        // Post a notification, primarily to allow code to collect responses for
+        // testing.
+        //
+        // The observing code is not likely on the fetcher's callback
+        // queue, so this posts explicitly to the main queue.
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+        if (data) {
+          userInfo[kGTMSessionFetcherCompletionDataKey] = data;
+        }
+        if (error) {
+          userInfo[kGTMSessionFetcherCompletionErrorKey] = error;
+        }
+        [self postNotificationOnMainThreadWithName:kGTMSessionFetcherCompletionInvokedNotification
+                                          userInfo:userInfo
+                                      requireAsync:NO];
+      }];
+    }
+  }  // @synchronized(self)
 
   if (shouldReleaseCallbacks) {
     [self releaseCallbacks];
-  }
-
-  if (handler) {
-    [self invokeOnCallbackQueue:callbackQueue afterUserStopped:NO block:^{
-      handler(data, error);
-
-      // Post a notification, primarily to allow code to collect responses for
-      // testing.
-      //
-      // The observing code is not likely on the fetcher's callback
-      // queue, so this posts explicitly to the main queue.
-      NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-      if (data) {
-        userInfo[kGTMSessionFetcherCompletionDataKey] = data;
-      }
-      if (error) {
-        userInfo[kGTMSessionFetcherCompletionErrorKey] = error;
-      }
-      [self postNotificationOnMainThreadWithName:kGTMSessionFetcherCompletionInvokedNotification
-                                        userInfo:userInfo
-                                    requireAsync:NO];
-    }];
   }
 }
 
@@ -3816,8 +3790,6 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
   }  // @synchronized(self)
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
 - (nullable id<GTMFetcherAuthorizationProtocol>)authorizer {
   @synchronized(self) {
     GTMSessionMonitorSynchronized(self);
@@ -3840,7 +3812,6 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
     }
   }  // @synchronized(self)
 }
-#pragma clang diagnostic pop
 
 - (nullable NSData *)downloadedData {
   @synchronized(self) {
@@ -4193,6 +4164,36 @@ static NSMutableDictionary *gSystemCompletionHandlers = nil;
   return NO;
 }
 #endif  // STRIP_GTM_FETCH_LOGGING
+
+@end
+
+@implementation GTMSessionFetcher (BackwardsCompatibilityOnly)
+
+- (void)setCookieStorageMethod:(NSInteger)method {
+  // For backwards compatibility with the old fetcher, we'll support the old constants.
+  //
+  // Clients using the GTMSessionFetcher class should set the cookie storage explicitly
+  // themselves.
+  NSHTTPCookieStorage *storage = nil;
+  switch (method) {
+    case 0:  // kGTMHTTPFetcherCookieStorageMethodStatic
+             // nil storage will use [[self class] staticCookieStorage] when the fetch begins.
+      break;
+    case 1:  // kGTMHTTPFetcherCookieStorageMethodFetchHistory
+             // Do nothing; use whatever was set by the fetcher service.
+      return;
+    case 2:  // kGTMHTTPFetcherCookieStorageMethodSystemDefault
+      storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+      break;
+    case 3:  // kGTMHTTPFetcherCookieStorageMethodNone
+             // Create temporary storage for this fetcher only.
+      storage = [[GTMSessionCookieStorage alloc] init];
+      break;
+    default:
+      GTMSESSION_ASSERT_DEBUG(0, @"Invalid cookie storage method: %d", (int)method);
+  }
+  self.cookieStorage = storage;
+}
 
 @end
 

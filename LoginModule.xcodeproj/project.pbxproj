@@ -112,6 +112,7 @@
 				A2E4C04128E20374009D1E9F /* Frameworks */,
 				A2E4C04228E20374009D1E9F /* Resources */,
 				5FEA9138BBA8E173C60CAB9D /* [CP] Embed Pods Frameworks */,
+				5FF8DEEB9F5DF6734447DBDB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -207,6 +208,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LoginModule/Pods-LoginModule-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5FF8DEEB9F5DF6734447DBDB /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LoginModule/Pods-LoginModule-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LoginModule/Pods-LoginModule-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LoginModule/Pods-LoginModule-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

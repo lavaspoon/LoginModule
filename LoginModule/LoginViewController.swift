@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import GoogleSignIn
 
 class LoginViewController : UIViewController {
     @IBOutlet weak var emailLoginBtn: UIButton!
-    @IBOutlet weak var googleLoginBtn: UIButton!
+    @IBOutlet weak var googleLoginBtn: GIDSignInButton!
     @IBOutlet weak var appleLoginBtn: UIButton!
     
     override func viewDidLoad() {
