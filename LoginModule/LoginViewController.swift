@@ -27,10 +27,13 @@ class LoginViewController : UIViewController {
         
         //네비게이션바 숨김
         navigationController?.navigationBar.isHidden = true
+        
+        //Google SignIn (Google SignIn에서 웹뷰를 띄울 컨트롤러는 LoginViewController 선언
+        GIDSignIn.sharedInstance().presentingViewController = self
     }
     
     @IBAction func googleLoginBtnTapped(_ sender: UIButton) {
-        
+        GIDSignIn.sharedInstance().signIn()
     }
     @IBAction func appleLoginBtnTapped(_ sender: UIButton) {
         

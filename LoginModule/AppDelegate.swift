@@ -42,8 +42,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
     }
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        if let error = error {
+            print("ERROR Google Sign In \(error.localizedDescription)")
+            return
+        }
         
+        guard let authentication = user.authentication else { return }
+        let creadential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
+        
+        Auth.auth().signIn(with: creadential) { _, _ in
+            self.showMainViewController()
+        }
     }
-
+    
+    private func showMainViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let mainViewController = storyboard.instantiateViewController(identifier: "MainViewController")
+        mainViewController.modalPresentationStyle = .fullScreen
+        UIApplication.shared.windows.first?.rootViewController?.show(mainViewController, sender: nil)
+    }
 }
 
